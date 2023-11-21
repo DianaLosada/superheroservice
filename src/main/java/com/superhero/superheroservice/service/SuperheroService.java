@@ -4,7 +4,6 @@ import com.superhero.superheroservice.model.Superhero;
 import com.superhero.superheroservice.repository.SuperheroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -21,7 +20,7 @@ public class SuperheroService {
     }
 
     public List<Superhero> getSuperheroesByName(String name) {
-        return superheroRepository.findByNameContaining(name);
+        return superheroRepository.findByNameIgnoreCaseContaining(name);
     }
 
     public Superhero createSuperhero(Superhero superhero) {
@@ -40,4 +39,6 @@ public class SuperheroService {
         superheroRepository.deleteById(id);
     }
 }
+
+
 

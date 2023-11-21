@@ -13,11 +13,13 @@ import org.springframework.http.ResponseEntity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class SuperheroControllerTests {
+class SuperheroControllerTests {
 
     @MockBean
     private SuperheroRepository superheroRepository;
@@ -26,7 +28,7 @@ public class SuperheroControllerTests {
     private TestRestTemplate testRestTemplate;
 
     @Test
-    public void shouldCreateNewSuperhero() {
+    void shouldCreateNewSuperhero() {
 
         ResponseEntity<Superhero> superHeroResponse = testRestTemplate.postForEntity("/api/superheroes",
                 new Superhero("Batman"), Superhero.class);
@@ -34,27 +36,34 @@ public class SuperheroControllerTests {
         assertThat(superHeroResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
     @Test
-    public void shouldReturnSuperheroesListWhenExists() {
+    void shouldReturnSuperheroesListWhenExists() {
         final List<Superhero> superheroesList = new ArrayList<>();
-        superheroesList.add(new Superhero("Batman"));
+        Superhero superhero1 = new Superhero();
+        superhero1.setName("Batman");
+        superheroesList.add(superhero1);
 
         // given
-        given(superheroRepository.findByNameContaining("Batman"))
+        given(superheroRepository.findByNameIgnoreCaseContaining("Batman"))
                 .willReturn(superheroesList);
 
         // when
         ResponseEntity<Superhero[]> superHeroResponse = testRestTemplate.getForEntity("/api/superheroes/search?name=Batman", Superhero[].class);
         Superhero[] superheroes = superHeroResponse.getBody();
 
+        //then
         assertThat(superHeroResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat("Batman".equals(Arrays.stream(superheroes).findFirst()));
+        Superhero superhero =  Arrays.stream(superheroes).findFirst().orElse(null);
+        if(superhero != null) {
+            assertThat(superhero.getName()).isEqualTo("Batman");
+        }
+
     }
 
     @Test
-    public void shouldReturnSuperheroesEmptyListWhenNotExists() {
+    void shouldReturnSuperheroesListEmptyWhenNotExists() {
         final List<Superhero> superheroesList = new ArrayList<>();
         // given
-        given(superheroRepository.findByNameContaining("Batman"))
+        given(superheroRepository.findByNameIgnoreCaseContaining("Batman") )
                 .willReturn(superheroesList);
 
         // when
@@ -62,6 +71,6 @@ public class SuperheroControllerTests {
         Superhero[] superheroes = superHeroResponse.getBody();
         // then
         assertThat(superHeroResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(superheroes.length == 0);
+        assertThat(superheroes).isEmpty();
     }
 }
