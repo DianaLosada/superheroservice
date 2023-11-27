@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -35,6 +34,7 @@ class SuperheroControllerTests {
 
         assertThat(superHeroResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
+
     @Test
     void shouldReturnSuperheroesListWhenExists() {
         final List<Superhero> superheroesList = new ArrayList<>();
@@ -50,13 +50,12 @@ class SuperheroControllerTests {
         ResponseEntity<Superhero[]> superHeroResponse = testRestTemplate.getForEntity("/api/superheroes/search?name=Batman", Superhero[].class);
         Superhero[] superheroes = superHeroResponse.getBody();
 
-        //then
+        // then
         assertThat(superHeroResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         Superhero superhero =  Arrays.stream(superheroes).findFirst().orElse(null);
         if(superhero != null) {
             assertThat(superhero.getName()).isEqualTo("Batman");
         }
-
     }
 
     @Test
