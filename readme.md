@@ -1,18 +1,19 @@
 # Spring Superhero API 
 
-You can access the Superhero API at:
+Developed, using Maven, Spring Boot, and Java, an API that allows CRUD maintenance of superheroes.
 
-An example of create a superhero (use Postman or similar):
-
+Create a superhero (use Postman or similar):
+    ```
 curl --location --request POST 'http://localhost:8080/api/superheroes' \
 --header 'Content-Type: application/json' \
 --data-raw '{
   "name": "Superman"
 }'
-
+    ```
 An example of search:
+    ```
 curl --location --request GET 'http://localhost:8080/api/superheroes/search?name=man'
-
+    ```
 
 - Documentation with Swagger: [http://localhost:8080/doc/superheroservice/swagger-ui/index.html](http://localhost:8080/doc/superheroservice/swagger-ui/index.html)
 
