@@ -21,6 +21,10 @@ public class Superhero {
 
     @Column(name = "name")
     private String name;
+
+    public Superhero(String name) {
+        this.name = name;
+    }
 }
 
 
