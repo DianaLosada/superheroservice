@@ -5,9 +5,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+/**
+ * This class is a controller advice for handling exceptions in the SuperheroController.
+ */
 @ControllerAdvice
 public class SuperheroControllerAdvice {
 
+    /**
+     * Handles IllegalArgumentException and returns a ResponseEntity with the exception message and HTTP status code 400 (Bad Request).
+     *
+     * @param e the IllegalArgumentException to be handled
+     * @return a ResponseEntity containing the exception message and HTTP status code 400 (Bad Request)
+     */
     @ExceptionHandler(value = IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

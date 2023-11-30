@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The SuperheroController class provides REST endpoints for managing superheroes.
+ */
 @RestController
 @RequestMapping("/api/superheroes")
 public class SuperheroController {
@@ -29,12 +32,23 @@ public class SuperheroController {
         this.superheroService = superheroService;
     }
 
+    /**
+     * Get all superheroes.
+     *
+     * @return List of all superheroes.
+     */
     @GetMapping
     @Timed
     public List<Superhero> getAllSuperheroes() {
         return superheroService.getAllSuperheroes();
     }
 
+    /**
+     * Get a superhero by ID.
+     *
+     * @param id The ID of the superhero.
+     * @return ResponseEntity containing the superhero if found, or not found status if not found.
+     */
     @GetMapping("/{id}")
     @Timed
     public ResponseEntity<Superhero> getSuperheroById(@PathVariable Long id) {
@@ -44,7 +58,14 @@ public class SuperheroController {
         }
         return ResponseEntity.ok(superhero);
     }
-    //show all superheroes with a given name (case insensitive) 
+
+    /**
+     * Get all superheroes with a given name (case insensitive).
+     *
+     * @param name The name of the superheroes to search for.
+     * @return List of superheroes with the given name.
+     * @throws IllegalArgumentException if the name is null or empty.
+     */
     @GetMapping("/search")
     @Timed
     public List<Superhero> getSuperheroesByName(@RequestParam String name) {
@@ -55,6 +76,13 @@ public class SuperheroController {
         return superheroService.getSuperheroesByName(name);
     }
 
+    /**
+     * Create a new superhero.
+     *
+     * @param superhero The superhero object to create.
+     * @return ResponseEntity containing the created superhero.
+     * @throws IllegalArgumentException if the superhero object or name is null or empty.
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Timed
@@ -69,6 +97,14 @@ public class SuperheroController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdSuperhero);
     }
 
+    /**
+     * Update a superhero by ID.
+     *
+     * @param id The ID of the superhero to update.
+     * @param superhero The updated superhero object.
+     * @return ResponseEntity containing the updated superhero if found, or not found status if not found.
+     * @throws IllegalArgumentException if the ID, superhero object, or name is invalid or null.
+     */
     @PutMapping("/{id}")
     @Timed
     public ResponseEntity<Superhero> updateSuperhero(@PathVariable Long id, @RequestBody Superhero superhero) {
@@ -91,6 +127,13 @@ public class SuperheroController {
         
     }
 
+    /**
+     * Delete a superhero by ID.
+     *
+     * @param id The ID of the superhero to delete.
+     * @return ResponseEntity with no content if the superhero is deleted successfully.
+     * @throws IllegalArgumentException if the superhero with the given ID does not exist.
+     */
     @DeleteMapping("/{id}")
     @Timed
     public ResponseEntity<Void> deleteSuperhero(@PathVariable Long id) {

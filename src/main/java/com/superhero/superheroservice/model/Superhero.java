@@ -1,4 +1,5 @@
 package com.superhero.superheroservice.model;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +10,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents a superhero entity in the application.
+ */
 @Entity
 @Table(name = "superheroes")
 @Data
@@ -22,6 +26,11 @@ public class Superhero {
     @Column(name = "name")
     private String name;
 
+    /**
+     * Constructs a superhero object with the given name.
+     * 
+     * @param name the name of the superhero
+     */
     public Superhero(String name) {
         this.name = name;
     }

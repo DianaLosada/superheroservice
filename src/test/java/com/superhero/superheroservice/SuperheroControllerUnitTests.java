@@ -28,6 +28,9 @@ import java.util.List;
 
 import static org.mockito.Mockito.doNothing;
 
+/**
+ * Unit tests for the SuperheroController class.
+ */
 @ExtendWith(MockitoExtension.class)
 public class SuperheroControllerUnitTests {
 
@@ -38,7 +41,7 @@ public class SuperheroControllerUnitTests {
     private SuperheroController superheroController;
 
     @Test
-    public void testGetSuperheroId() {
+    void testGetSuperheroId() {
         Superhero superhero = new Superhero();
         superhero.setName("Superman");
         superhero.setId(1L);
@@ -54,7 +57,7 @@ public class SuperheroControllerUnitTests {
 
     }
 
-       @Test
+    @Test
     void testUpdateSuperhero_ValidIdAndSuperhero_ReturnsOkResponse() {
         // Arrange
         Long id = 1L;
@@ -198,7 +201,7 @@ public class SuperheroControllerUnitTests {
     }
     
     @Test
-void testGetSuperheroesByName_ValidName_ReturnsListOfSuperheroes() {
+    void testGetSuperheroesByName_ValidName_ReturnsListOfSuperheroes() {
     // Arrange
     String name = "Superman";
     List<Superhero> superheroes = new ArrayList<>();
@@ -214,10 +217,10 @@ void testGetSuperheroesByName_ValidName_ReturnsListOfSuperheroes() {
     // Assert
     assertEquals(superheroes, response);
     verify(superheroService, times(1)).getSuperheroesByName(name);
-}
+    }
 
-@Test
-void testGetSuperheroesByName_InvalidName_ReturnsEmptyList() {
+    @Test
+        void testGetSuperheroesByName_InvalidName_ReturnsEmptyList() {
     // Arrange
     String name = "InvalidName";
 
@@ -229,17 +232,17 @@ void testGetSuperheroesByName_InvalidName_ReturnsEmptyList() {
     // Assert
     assertTrue(response.isEmpty());
     verify(superheroService, times(1)).getSuperheroesByName(name);
-}
+    }
 
-@Test
-void testGetSuperheroesByName_NullName_ThrowsIllegalArgumentException() {
+    @Test
+    void testGetSuperheroesByName_NullName_ThrowsIllegalArgumentException() {
     // Arrange
     String name = null;
 
     // Act & Assert
     assertThrows(IllegalArgumentException.class, () -> superheroController.getSuperheroesByName(name));
     verify(superheroService, never()).getSuperheroesByName(name);
-}
+    }
 
 }
 
