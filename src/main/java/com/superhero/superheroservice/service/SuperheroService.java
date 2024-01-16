@@ -1,5 +1,6 @@
 package com.superhero.superheroservice.service;
 
+import com.superhero.superheroservice.exception.NotFoundSuperheroException;
 import com.superhero.superheroservice.model.Superhero;
 import com.superhero.superheroservice.repository.SuperheroRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -31,12 +32,13 @@ public class SuperheroService {
 
     /**
      * Retrieves a superhero by its ID.
-     * 
-     * @param id the ID of the superhero
-     * @return the superhero with the specified ID, or null if not found
+     *
+     * @param id the ID of the superhero to retrieve
+     * @return the superhero with the specified ID
+     * @throws NotFoundSuperheroException if the superhero with the specified ID does not exist
      */
     public Superhero getSuperheroById(Long id) {
-        return superheroRepository.findById(id).orElse(null);
+        return superheroRepository.findById(id).orElseThrow(()->new NotFoundSuperheroException("Superhero with id " + id + " not found"));
     }
 
     /**
@@ -46,7 +48,7 @@ public class SuperheroService {
      * @return a list of superheroes with names containing the specified name
      */
     @Cacheable(cacheNames="superheroesCache")
-    public List<Superhero> getSuperheroesByName(String name) {
+    public List<Superhero>  getSuperheroesByName(String name) {
         log.info("getSuperheroesByName called");
         return superheroRepository.findByNameIgnoreCaseContaining(name);
     }

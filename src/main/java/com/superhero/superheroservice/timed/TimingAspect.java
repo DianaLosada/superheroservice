@@ -1,6 +1,9 @@
 package com.superhero.superheroservice.timed;
 
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Optional;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -25,12 +28,20 @@ public class TimingAspect {
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
 
-        Object result = joinPoint.proceed();
-
-        long endTime = System.currentTimeMillis();
-        long duration = endTime - startTime;
-
-        log.info("{} executed in {} ms", joinPoint.getSignature(), duration);
+        Object result = null;
+        try{
+            result = joinPoint.proceed();
+        }catch ( Throwable throwable) {
+            log.error("Exception in logExecutionTime: {}", throwable.getMessage());
+            throw throwable;
+        }finally {
+            long endTime = System.currentTimeMillis();
+            long duration = endTime - startTime;
+            Optional.ofNullable(joinPoint).ifPresentOrElse(
+                    jp -> log.info("{} executed in {} ms", jp.getSignature(), duration),
+                    () -> log.info("Method executed in {} ms", duration)
+            );
+        }
         return result;
     }
 }

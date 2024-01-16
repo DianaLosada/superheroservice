@@ -1,5 +1,6 @@
 package com.superhero.superheroservice.controller;
 
+import com.superhero.superheroservice.exception.NotFoundSuperheroException;
 import com.superhero.superheroservice.service.SuperheroService;
 import com.superhero.superheroservice.timed.Timed;
 import com.superhero.superheroservice.model.Superhero;
@@ -52,8 +53,10 @@ public class SuperheroController {
     @GetMapping("/{id}")
     @Timed
     public ResponseEntity<Superhero> getSuperheroById(@PathVariable Long id) {
-        Superhero superhero = superheroService.getSuperheroById(id);
-        if (superhero == null) {
+        Superhero superhero = null;
+        try {
+            superhero = superheroService.getSuperheroById(id);
+        }catch (NotFoundSuperheroException e){
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(superhero);

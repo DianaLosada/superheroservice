@@ -1,6 +1,7 @@
 package com.superhero.superheroservice;
 
 import com.superhero.superheroservice.controller.SuperheroController;
+import com.superhero.superheroservice.exception.NotFoundSuperheroException;
 import com.superhero.superheroservice.model.Superhero;
 import com.superhero.superheroservice.service.SuperheroService;
 import org.junit.jupiter.api.Test;
@@ -41,13 +42,15 @@ public class SuperheroControllerUnitTests {
     private SuperheroController superheroController;
 
     @Test
-    void testGetSuperheroId() {
+    void testGetSuperheroById() {
         Superhero superhero = new Superhero();
         superhero.setName("Superman");
         superhero.setId(1L);
+
         when(superheroService.getSuperheroById(anyLong())).thenReturn(superhero);
 
         ResponseEntity<Superhero> result = superheroController.getSuperheroById(1L);
+
         assertThat(result)
                 .isNotNull()
                 .extracting(ResponseEntity::getBody)
@@ -55,6 +58,21 @@ public class SuperheroControllerUnitTests {
                 .extracting(Superhero::getName)
                 .isEqualTo(superhero.getName());
 
+        verify(superheroService, times(1)).getSuperheroById(1L);
+    }
+
+    @Test
+    void testGetSuperheroByIdNotFound() {
+        when(superheroService.getSuperheroById(anyLong())).thenThrow(new NotFoundSuperheroException("Superhero with id 1 not found"));
+
+        ResponseEntity<Superhero> result = superheroController.getSuperheroById(1L);
+
+        assertThat(result)
+                .isNotNull()
+                .extracting(ResponseEntity::getStatusCode)
+                .isEqualTo(HttpStatus.NOT_FOUND);
+
+        verify(superheroService, times(1)).getSuperheroById(1L);
     }
 
     @Test

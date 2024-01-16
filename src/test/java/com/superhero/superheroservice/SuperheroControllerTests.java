@@ -1,5 +1,6 @@
 package com.superhero.superheroservice;
 
+import com.superhero.superheroservice.exception.NotFoundSuperheroException;
 import com.superhero.superheroservice.model.Superhero;
 import com.superhero.superheroservice.repository.SuperheroRepository;
 import com.superhero.superheroservice.service.SuperheroService;
@@ -107,7 +108,7 @@ class SuperheroControllerTests {
 
         testRestTemplate.delete("/api/superheroes/" + superheroId);
 
-        when(superheroService.getSuperheroById(superheroId)).thenReturn(null);
+        when(superheroService.getSuperheroById(superheroId)).thenThrow( new NotFoundSuperheroException("Superhero with id " + superheroId + " not found"));
         ResponseEntity<Superhero> response = testRestTemplate.getForEntity("/api/superheroes/" + superheroId,
                 Superhero.class);
 
