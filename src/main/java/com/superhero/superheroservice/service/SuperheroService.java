@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -25,9 +27,9 @@ public class SuperheroService {
      * @return a list of all superheroes
      */
     @Cacheable(cacheNames="superheroesCache")
-    public List<Superhero> getAllSuperheroes() {
+    public Page<Superhero> getAllSuperheroes(Pageable pageable) {
         log.info("getAllSuperheroes called");
-        return superheroRepository.findAll();
+        return superheroRepository.findAll(pageable);
     }
 
     /**

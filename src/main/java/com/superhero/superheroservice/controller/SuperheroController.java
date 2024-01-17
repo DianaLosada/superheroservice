@@ -5,6 +5,9 @@ import com.superhero.superheroservice.service.SuperheroService;
 import com.superhero.superheroservice.timed.Timed;
 import com.superhero.superheroservice.model.Superhero;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,9 +43,13 @@ public class SuperheroController {
      */
     @GetMapping
     @Timed
-    public List<Superhero> getAllSuperheroes() {
-        return superheroService.getAllSuperheroes();
-    }
+ public ResponseEntity<Page<Superhero>> getAllSuperheroes(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "200") int size) {
+    Pageable pageable = PageRequest.of(page, size);
+    Page<Superhero> result = superheroService.getAllSuperheroes(pageable);
+    return ResponseEntity.ok(result);
+}
 
     /**
      * Get a superhero by ID.
