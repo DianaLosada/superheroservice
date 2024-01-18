@@ -10,7 +10,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.util.List;
 
 /**
  * The SuperheroService class provides methods to manage superheroes.
@@ -50,9 +49,9 @@ public class SuperheroService {
      * @return a list of superheroes with names containing the specified name
      */
     @Cacheable(cacheNames="superheroesCache")
-    public List<Superhero>  getSuperheroesByName(String name) {
+    public  Page<Superhero>  getSuperheroesByName(String name, Pageable pageable) {
         log.info("getSuperheroesByName called");
-        return superheroRepository.findByNameIgnoreCaseContaining(name);
+        return superheroRepository.findByNameIgnoreCaseContaining(name, pageable);
     }
 
     /**

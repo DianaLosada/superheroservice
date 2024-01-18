@@ -9,6 +9,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -221,45 +225,54 @@ public class SuperheroControllerUnitTests {
     @Test
     void testGetSuperheroesByName_ValidName_ReturnsListOfSuperheroes() {
     // Arrange
-    String name = "Superman";
+    String name = "man";
+    int page = 0;
+    int size = 3;
+    Pageable pageable = PageRequest.of(page, size);
+    
     List<Superhero> superheroes = new ArrayList<>();
     superheroes.add(new Superhero(1L, "Superman"));
     superheroes.add(new Superhero(2L, "Superwoman"));
-    superheroes.add(new Superhero(3L, "Superboy"));
+    superheroes.add(new Superhero(3L, "Batman"));
+    superheroes.add(new Superhero(4L, "Man of Steel"));
 
-    when(superheroService.getSuperheroesByName(name)).thenReturn(superheroes);
+    Page<Superhero> superheroesPage = new PageImpl<>(superheroes);
+    when(superheroService.getSuperheroesByName(name, pageable)).thenReturn(superheroesPage);
 
     // Act
-    List<Superhero> response = superheroController.getSuperheroesByName(name);
+    ResponseEntity<Page<Superhero>> response = superheroController.getSuperheroesByName(name, page, size);
 
     // Assert
-    assertEquals(superheroes, response);
-    verify(superheroService, times(1)).getSuperheroesByName(name);
+    assertEquals(superheroesPage, response.getBody());
+    verify(superheroService, times(1)).getSuperheroesByName(name, pageable);
     }
-
+ 
     @Test
-        void testGetSuperheroesByName_InvalidName_ReturnsEmptyList() {
+    void testGetSuperheroesByName_InvalidName_ReturnsEmptyList() {
     // Arrange
     String name = "InvalidName";
+    Pageable pageable = PageRequest.of(0, 10);
+    Page<Superhero> emptyPage = new PageImpl<>(Collections.emptyList());
 
-    when(superheroService.getSuperheroesByName(name)).thenReturn(Collections.emptyList());
+    when(superheroService.getSuperheroesByName(name, pageable)).thenReturn(emptyPage);
 
     // Act
-    List<Superhero> response = superheroController.getSuperheroesByName(name);
+    ResponseEntity<Page<Superhero>> response = superheroController.getSuperheroesByName(name, 0, 10);
 
     // Assert
-    assertTrue(response.isEmpty());
-    verify(superheroService, times(1)).getSuperheroesByName(name);
+    assertTrue(response.getBody().isEmpty());
+    verify(superheroService, times(1)).getSuperheroesByName(name, pageable);
     }
 
     @Test
     void testGetSuperheroesByName_NullName_ThrowsIllegalArgumentException() {
     // Arrange
     String name = null;
-
+    Pageable pageable = PageRequest.of(0, 10);
+    Page<Superhero> emptyPage = new PageImpl<>(Collections.emptyList());
     // Act & Assert
-    assertThrows(IllegalArgumentException.class, () -> superheroController.getSuperheroesByName(name));
-    verify(superheroService, never()).getSuperheroesByName(name);
+    assertThrows(IllegalArgumentException.class, () -> superheroController.getSuperheroesByName(name, 0, 10));
+    verify(superheroService, never()).getSuperheroesByName(name, pageable);
     }
 
 }

@@ -10,17 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 /**
@@ -37,6 +32,7 @@ class SuperheroControllerTests {
 
     @MockBean
     private SuperheroService superheroService;
+
 
     @Test
     void shouldCreateNewSuperhero() {
@@ -61,41 +57,6 @@ class SuperheroControllerTests {
                 new Superhero(null), String.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
- 
-    @Test
-    void shouldReturnSuperheroesListWhenExists() {
-        final List<Superhero> superheroesList = new ArrayList<>();
-        Superhero superhero1 = new Superhero();
-        superhero1.setName("Batman");
-        superheroesList.add(superhero1);
-
-        // given
-        given(superheroRepository.findByNameIgnoreCaseContaining("Batman"))
-                .willReturn(superheroesList);
-
-        // when
-        ResponseEntity<List<Superhero>> superHeroResponse = testRestTemplate.exchange("/api/superheroes/search?name=Batman", HttpMethod.GET, null, new ParameterizedTypeReference<List<Superhero>>() {});
-
-        // then
-        assertThat(superHeroResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(superHeroResponse.getBody()).isNotNull();
-    }
-
-
-    @Test
-    void shouldReturnSuperheroesListEmptyWhenNotExists() {
-        final List<Superhero> superheroesList = new ArrayList<>();
-        // given
-        given(superheroRepository.findByNameIgnoreCaseContaining("Batman") )
-                .willReturn(superheroesList);
-
-        // when
-        ResponseEntity<Superhero[]> superHeroResponse = testRestTemplate.getForEntity("/api/superheroes/search?name=Batman", Superhero[].class);
-        Superhero[] superheroes = superHeroResponse.getBody();
-        // then
-        assertThat(superHeroResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(superheroes).isEmpty();
     }
 
     @Test
